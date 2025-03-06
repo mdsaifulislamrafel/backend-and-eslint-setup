@@ -18,7 +18,7 @@ export default [
       'no-undef': 'error',
     },
     globals: {
-      "process" : "readonly",
+      process: 'readonly',
     },
   },
 ];
