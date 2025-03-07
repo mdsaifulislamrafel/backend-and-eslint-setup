@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
 import {
   StudentModel,
   TGuardian,
@@ -7,7 +6,6 @@ import {
   TStudent,
   TUserName,
 } from './student.interface';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: { type: String, required: [true, 'First name is required'] },
@@ -59,7 +57,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Student ID is required'],
       unique: true,
     },
-    password: { type: String, required: [true, 'Password is required'] },
+    user: { type: Schema.Types.ObjectId, ref: 'User', required: [true, 'User id is required'], unique: true},
     name: {
       type: userNameSchema,
       required: [true, 'Student name is required'],
@@ -105,7 +103,6 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, 'Local guardian information is required'],
     },
     profileImg: { type: String },
-    isActive: { type: String, enum: ['active', 'blocked'], default: 'active' },
     isDeleted: { type: Boolean, default: false },
   },
   {
@@ -122,17 +119,7 @@ studentSchema.virtual('fullName').get(function () {
 });
 
 // pre hook use
-studentSchema.pre('save', async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-  next();
-});
-studentSchema.post('save', async function (doc, next) {
-  (doc.password = ''), next();
-});
+
 
 // Query middle ware
 studentSchema.pre('find', function (next) {
