@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Model, ObjectId, Types } from 'mongoose';
 
 export type TGuardian = {
   fatherName: string;
@@ -37,7 +37,7 @@ export type TStudent = {
   user: Types.ObjectId;
   name: TUserName;
   gender: 'male' | 'female' | 'other';
-  dateOfBirth?: string;
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactN0: string;
@@ -47,6 +47,7 @@ export type TStudent = {
   guardian: TGuardian;
   localGuardian: TLocalGuardian;
   profileImg?: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 };
 
@@ -57,7 +58,6 @@ export type TStudent = {
 
 // export type StudentModel = Model<TStudent, Record<string, never>, StudentMethods>;
 
-
 export interface StudentModel extends Model<TStudent> {
-  isExistingUser(id: string): Promise<TStudent | null>
+  isExistingUser(id: string): Promise<TStudent | null>;
 }
